@@ -14,13 +14,6 @@
 #
 # BoardConfig.mk
 #
-# WARNING: This line must come *before* including the proprietary
-# variant, so that it gets overwritten by the parent (which goes
-# against the traditional rules of inheritance).
-# The proprietary variant sets USE_CAMERA_STUB := false, this way
-# we use the camera stub when the vendor tree isn't present, and
-# the true camera library when the vendor tree is available.
-USE_CAMERA_STUB := true
 
 ## Kernel, bootloader etc.
 TARGET_NO_BOOTLOADER := true
@@ -58,6 +51,10 @@ TARGET_USES_ION := true
 BOARD_NEEDS_MEMORYHEAPPMEM := true
 BOARD_USE_MHEAP_SCREENSHOT := true
 
+## Camera
+TARGET_DISABLE_ARM_PIE := true
+COMMON_GLOBAL_CFLAGS += -DBINDER_COMPAT -DNEEDS_VECTORIMPL_SYMBOLS -DSAMSUNG_CAMERA_LEGACY
+
 ## Qcom hardwae
 BOARD_USES_QCOM_HARDWARE := true
 COMMON_GLOBAL_CFLAGS += -DQCOM_HARDWARE
@@ -68,7 +65,7 @@ TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
 COMMON_GLOBAL_CFLAGS += -DQCOM_LEGACY_MMPARSER
 
 ## Audio
-TARGET_QCOM_AUDIO_VARIANT := legacy
+TARGET_QCOM_AUDIO_VARIANT := caf
 BOARD_USES_LEGACY_ALSA_AUDIO := true
 COMMON_GLOBAL_CFLAGS += -DNO_TUNNELED_SOURCE
 
@@ -78,17 +75,10 @@ TARGET_QCOM_DISPLAY_VARIANT := legacy
 TARGET_DOESNT_USE_FENCE_SYNC := true
 BOARD_ADRENO_DECIDE_TEXTURE_TARGET := true
 BOARD_EGL_CFG := device/samsung/msm7x27a-common/prebuilt/lib/egl/egl.cfg
-BOARD_EGL_NEEDS_LEGACY_FB := true
 
 ## Qualcomm BSP
 TARGET_USES_QCOM_BSP := true
 COMMON_GLOBAL_CFLAGS += -DQCOM_BSP
-
-#camera abi compatiblily
-COMMON_GLOBAL_CFLAGS += -DBINDER_COMPAT -DQCOM_BSP_CAMERA_ABI_HACK -DMR0_CAMERA_BLOB
-COMMON_GLOBAL_CFLAGS += -DNEEDS_VECTORIMPL_SYMBOLS -DDISABLE_HW_ID_MATCH_CHECK -DSAMSUNG_CAMERA_LEGACY
-TARGET_DISABLE_ARM_PIE := true
-BOARD_CAMERA_USE_MM_HEAP := true
 
 ## GPS
 BOARD_USES_QCOM_LIBRPC := true
