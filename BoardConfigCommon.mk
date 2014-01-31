@@ -136,6 +136,9 @@ BOARD_CHARGER_RES := device/samsung/msm7x27a-common/res/charger
 TARGET_PROVIDES_LIBLIGHTS := true
 TARGET_PROVIDES_LIBAUDIO := true
 
+## Override healthd HAL
+BOARD_HAL_STATIC_LIBRARIES := libhealthd.msm7x27a
+
 ## Recovery
 DEVICE_RESOLUTION := 320x480
 RECOVERY_GRAPHICS_USE_LINELENGTH := true
