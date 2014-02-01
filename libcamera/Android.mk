@@ -31,8 +31,7 @@ DLOPEN_LIBCAMERA := 1
 #LOCAL_SHARED_LIBRARIES += libcamera
 LOCAL_SRC_FILES  := cameraHAL.cpp
 LOCAL_SHARED_LIBRARIES += libhardware
-LOCAL_LDFLAGS          += -Lvendor/samsung/msm7x27a-common/proprietary/lib -lcamera
-LOCAL_CFLAGS           += -DUSE_GETBUFFERINFO -DCAF_CAMERA_GB_REL
+LOCAL_LDFLAGS          += -Lvendor/samsung/msm7x27-common/proprietary/lib -lcamera
 else
 DLOPEN_LIBCAMERA := 0
 LOCAL_SRC_FILES  := QualcommCameraHardware.cpp QcomCamera.cpp
