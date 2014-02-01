@@ -21,6 +21,8 @@
 
 #define LOG_TAG "CameraHAL"
 
+#define GRALLOC_USAGE_PMEM_PRIVATE_ADSP GRALLOC_USAGE_PRIVATE_0
+
 #include <camera/CameraParameters.h>
 #include <hardware/camera.h>
 #include <binder/IMemory.h>
@@ -49,25 +51,23 @@ static int camera_get_number_of_cameras(void);
 static int camera_get_camera_info(int camera_id, struct camera_info *info);
 
 static struct hw_module_methods_t camera_module_methods = {
-    .open = camera_device_open
-};
-
-static hw_module_t camera_common  = {
-    .tag = HARDWARE_MODULE_TAG,
-    .version_major = 1,
-    .version_minor = 1,
-    .id = CAMERA_HARDWARE_MODULE_ID,
-    .name = "Jellybean Camera Hal",
-    .author = "Raviprasad V Mummidi",
-    .methods = &camera_module_methods,
-    .dso = NULL,
-    .reserved = {0},
+    open: camera_device_open
 };
 
 camera_module_t HAL_MODULE_INFO_SYM = {
-    .common = camera_common,
-    .get_number_of_cameras = camera_get_number_of_cameras,
-    .get_camera_info = camera_get_camera_info,
+    common: {
+        tag: HARDWARE_MODULE_TAG,
+        module_api_version: CAMERA_DEVICE_API_VERSION_1_0,
+        hal_api_version: 0,
+        id: CAMERA_HARDWARE_MODULE_ID,
+        name: "Camera HAL",
+        author: "Zhibin Wu & Marcin Chojnacki & Pavel Kirpichyov",
+        methods: &camera_module_methods,
+        dso: NULL, /* remove compilation warnings */
+        reserved: {0}, /* remove compilation warnings */
+    },
+    get_number_of_cameras: camera_get_number_of_cameras,
+    get_camera_info: camera_get_camera_info,
 };
 
 typedef struct priv_camera_device {
@@ -214,38 +214,57 @@ static void wrap_data_callback_timestamp(nsecs_t timestamp, int32_t msg_type, co
 }
 
 void CameraHAL_FixupParams(android::CameraParameters &camParams) {
-    const char *video_sizes = "640x480,384x288,352x288,320x240,240x160,176x144";
-    const char *preferred_video_size = "640x480";
-    const char *preferred_size = "640x480";
+    const char *video_sizes            = "640x480,384x288,352x288,320x240,240x160,176x144";
+#if (SENSOR_SIZE > 3)
+    const char *preferred_size         = "640x480";
+#elif (SENSOR_SIZE > 2)
+    const char *preferred_size         = "480x320";
+#else /* SENSOR_SIZE=2 */
+    const char *preferred_size         = "320x240";
+#endif
+    const char *preview_frame_rates    = "25,24,15";
 
     camParams.set(CameraParameters::KEY_VIDEO_FRAME_FORMAT, CameraParameters::PIXEL_FORMAT_YUV420SP);
 
-    if (!camParams.get(CameraParameters::KEY_VIDEO_SIZE)) {
-	 camParams.set(CameraParameters::KEY_VIDEO_SIZE, preferred_video_size);
-    }
+    camParams.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO,  preferred_size);
+
+    camParams.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES, preview_frame_rates);
 
     if (!camParams.get(CameraParameters::KEY_SUPPORTED_VIDEO_SIZES)) {
-         camParams.set(CameraParameters::KEY_SUPPORTED_VIDEO_SIZES, video_sizes); }
+         camParams.set(CameraParameters::KEY_SUPPORTED_VIDEO_SIZES, video_sizes);
+    }
 
     if (!camParams.get(CameraParameters::KEY_MAX_NUM_FOCUS_AREAS)) {
-        camParams.set(CameraParameters::KEY_MAX_NUM_FOCUS_AREAS, 1); }
-
-    if (camParams.get(android::CameraParameters::KEY_MAX_CONTRAST)) {
-      	camParams.set("max-contrast", camParams.get(android::CameraParameters::KEY_MAX_CONTRAST));
-    } else {
-      	camParams.set("max-contrast", -1);
+        camParams.set(CameraParameters::KEY_MAX_NUM_FOCUS_AREAS, 1);
     }
 
-    if (camParams.get(android::CameraParameters::KEY_MAX_SATURATION)) {
-      	camParams.set("max-saturation", camParams.get(android::CameraParameters::KEY_MAX_SATURATION));
+    if (!camParams.get(CameraParameters::KEY_VIDEO_SIZE)) {
+         camParams.set(CameraParameters::KEY_VIDEO_SIZE, preferred_size);
+    }
+    camParams.set("orientation", "landscape");
+
+    if (camParams.get(CameraParameters::KEY_MAX_CONTRAST)) {
+        camParams.set("max-contrast",
+            camParams.get(CameraParameters::KEY_MAX_CONTRAST));
     } else {
-      	camParams.set("max-saturation", -1);
+        camParams.set("max-contrast",
+            -1);
     }
 
-    if (camParams.get(android::CameraParameters::KEY_MAX_SHARPNESS)) {
-      	camParams.set("max-sharpness", camParams.get(android::CameraParameters::KEY_MAX_SHARPNESS));
+    if (camParams.get(CameraParameters::KEY_MAX_SATURATION)) {
+        camParams.set("max-saturation",
+            camParams.get(CameraParameters::KEY_MAX_SATURATION));
     } else {
-      	camParams.set("max-sharpness", -1);
+        camParams.set("max-saturation",
+            -1);
+    }
+
+    if (camParams.get(CameraParameters::KEY_MAX_SHARPNESS)) {
+        camParams.set("max-sharpness",
+            camParams.get(CameraParameters::KEY_MAX_SHARPNESS));
+    } else {
+        camParams.set("max-sharpness",
+            -1);
     }
 }
 
@@ -294,7 +313,7 @@ int camera_set_preview_window(struct camera_device * device, struct preview_stre
 
     ALOGV("%s: preview format %s", __FUNCTION__, str_preview_format);
 
-    dev->window->set_usage(dev->window, GRALLOC_USAGE_PRIVATE_SYSTEM_HEAP | GRALLOC_USAGE_SW_READ_OFTEN);
+    dev->window->set_usage(dev->window, GRALLOC_USAGE_PMEM_PRIVATE_ADSP | GRALLOC_USAGE_SW_READ_OFTEN);
 
     if (dev->window->set_buffers_geometry(dev->window, dev->preview_width,
                                      dev->preview_height, HAL_PIXEL_FORMAT_YCrCb_420_SP)) {
@@ -460,7 +479,7 @@ void sighandle(int s) {
 }
 
 int camera_device_open(const hw_module_t* module, const char* name, hw_device_t** device) {
-    ALOGI("CameraHAL v0.3.2");
+    ALOGI("CameraHAL v0.3");
     int rv = 0;
     int cameraid;
     int num_cameras = 0;
