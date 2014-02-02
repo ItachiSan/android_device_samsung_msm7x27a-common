@@ -1,13 +1,10 @@
-From 66ecbd1cf2ff4b773dbddc79747a88c2b70ea901 Mon Sep 17 00:00:00 2001
-From: Giovanni Santini <giovannisantini93@yahoo.it>
-Date: Sun, 2 Feb 2014 19:05:32 +0100
-Subject: [PATCH 2/2] charger: change backlight before blanking the display
-
-Original:
 From a3833efb371ce64a5daef9e5b66f0d8a39fbc41d Mon Sep 17 00:00:00 2001
 From: TheWhisp <daavis.90@gmail.com>
 Date: Fri, 27 Dec 2013 15:06:32 +0200
 Subject: [PATCH 2/2] charger: change backlight before blanking the display
+
+Adapted by Giovanni Santini <giovannisantini93@yahoo.it>
+on date Sun, 2 Feb 2014 19:05:32 +0100
 
 Change-Id: I67f34610964a7213226e77d7250cf6cd964558ad
 ---
