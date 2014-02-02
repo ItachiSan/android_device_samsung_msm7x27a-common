@@ -230,11 +230,9 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams) {
 
     camParams.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES, preview_frame_rates);
 
-#if 0
     if (!camParams.get(CameraParameters::KEY_SUPPORTED_VIDEO_SIZES)) {
          camParams.set(CameraParameters::KEY_SUPPORTED_VIDEO_SIZES, video_sizes);
     }
-#endif
 
     if (!camParams.get(CameraParameters::KEY_MAX_NUM_FOCUS_AREAS)) {
         camParams.set(CameraParameters::KEY_MAX_NUM_FOCUS_AREAS, 1);
