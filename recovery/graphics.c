@@ -65,9 +65,9 @@ static GGLSurface gr_framebuffer[NUM_BUFFERS];
 static GGLSurface gr_mem_surface;
 static unsigned gr_active_fb = 0;
 static unsigned double_buffering = 0;
-static int overscan_percent = OVERSCAN_PERCENT;
-static int overscan_offset_x = 0;
-static int overscan_offset_y = 0;
+//static int overscan_percent = OVERSCAN_PERCENT;
+//static int overscan_offset_x = 0;
+//static int overscan_offset_y = 0;
 
 static int gr_fb_fd = -1;
 static int gr_vt_fd = -1;
@@ -140,8 +140,8 @@ static int get_framebuffer(GGLSurface *fb)
         return -1;
     }
 
-    overscan_offset_x = vi.xres * overscan_percent / 100;
-    overscan_offset_y = vi.yres * overscan_percent / 100;
+    //overscan_offset_x = vi.xres * overscan_percent / 100;
+    //overscan_offset_y = vi.yres * overscan_percent / 100;
 
     fb->version = sizeof(*fb);
     fb->width = vi.xres;
@@ -235,8 +235,8 @@ int gr_text(int x, int y, const char *s)
     GRFont *font = gr_font;
     unsigned off;
 
-    x += overscan_offset_x;
-    y += overscan_offset_y;
+    //x += overscan_offset_x;
+    //y += overscan_offset_y;
 
     y -= font->ascent;
 
@@ -264,8 +264,8 @@ void gr_texticon(int x, int y, gr_surface icon) {
     }
     GGLContext* gl = gr_context;
 
-    x += overscan_offset_x;
-    y += overscan_offset_y;
+    //x += overscan_offset_x;
+    //y += overscan_offset_y;
 
     gl->bindTexture(gl, (GGLSurface*) icon);
     gl->texEnvi(gl, GGL_TEXTURE_ENV, GGL_TEXTURE_ENV_MODE, GGL_REPLACE);
@@ -280,16 +280,20 @@ void gr_texticon(int x, int y, gr_surface icon) {
     gl->recti(gl, x, y, x+gr_get_width(icon), y+gr_get_height(icon));
 }
 
-void gr_fill(int x1, int y1, int x2, int y2)
+void gr_fill(int x, int y, int w, int h)
+//void gr_fill(int x1, int y1, int x2, int y2)
 {
+    /*
     x1 += overscan_offset_x;
     y1 += overscan_offset_y;
 
     x2 += overscan_offset_x;
     y2 += overscan_offset_y;
-
+    */
+    
     GGLContext *gl = gr_context;
     gl->disable(gl, GGL_TEXTURE_2D);
+    //gl->recti(gl, x1, y1, x2, y2);
     gl->recti(gl, x1, y1, x2, y2);
 }
 
@@ -299,8 +303,8 @@ void gr_blit(gr_surface source, int sx, int sy, int w, int h, int dx, int dy) {
     }
     GGLContext *gl = gr_context;
 
-    dx += overscan_offset_x;
-    dy += overscan_offset_y;
+    //dx += overscan_offset_x;
+    //dy += overscan_offset_y;
 
     gl->bindTexture(gl, (GGLSurface*) source);
     gl->texEnvi(gl, GGL_TEXTURE_ENV, GGL_TEXTURE_ENV_MODE, GGL_REPLACE);
@@ -411,12 +415,14 @@ void gr_exit(void)
 
 int gr_fb_width(void)
 {
-    return gr_framebuffer[0].width - 2*overscan_offset_x;
+    //return gr_framebuffer[0].width - 2*overscan_offset_x;
+    return gr_framebuffer[0].width;
 }
 
 int gr_fb_height(void)
 {
-    return gr_framebuffer[0].height - 2*overscan_offset_y;
+    //return gr_framebuffer[0].height - 2*overscan_offset_y;
+    return gr_framebuffer[0].height;
 }
 
 gr_pixel *gr_fb_data(void)
