@@ -3557,7 +3557,7 @@ int QualcommCameraHardware::allocate_ion_memory(int *main_ion_fd, struct ion_all
     /* to make it page size aligned */
     alloc->len = (alloc->len + 4095) & (~4095);
     alloc->align = 4096;
-    alloc->heap_mask = (0x1 << ion_type);
+//    alloc->heap_mask = (0x1 << ion_type);
     alloc->flags = ~ION_SECURE;
 
     rc = ioctl(*main_ion_fd, ION_IOC_ALLOC, alloc);
