@@ -93,7 +93,6 @@ WIFI_DRIVER_MODULE_ARG := "suspend_mode=3 wow_mode=2 ath6kl_p2p=1 recovery_enabl
 
 ## RIL
 BOARD_USES_LEGACY_RIL := true
-#BOARD_RIL_CLASS := ../../../device/samsung/msm7x27a-common/ril/
 
 ## Vold
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
@@ -110,6 +109,7 @@ TARGET_NO_INITLOGO := true
 BOARD_LPM_BOOT_ARGUMENT_NAME := androidboot.boot_pause
 BOARD_LPM_BOOT_ARGUMENT_VALUE := batt
 BOARD_CHARGER_RES := device/samsung/msm7x27a-common/res/charger
+#BOARD_CHARGER_RES := device/samsung/msm7x27a-common/res/test
 
 ## Use device specific modules
 TARGET_PROVIDES_LIBLIGHTS := true
@@ -126,6 +126,9 @@ BOARD_HAS_DOWNLOAD_MODE := true
 BOARD_USES_MMCUTILS := true
 BOARD_HAS_NO_MISC_PARTITION := true
 BOARD_FLASH_BLOCK_SIZE := 131072
+
+# Test for charger
+BOARD_CUSTOM_GRAPHICS := ../../../device/samsung/msm7x27a-common/recovery/graphics.c
 
 ## Filesystem
 BOARD_DATA_DEVICE := /dev/block/mmcblk0p18
