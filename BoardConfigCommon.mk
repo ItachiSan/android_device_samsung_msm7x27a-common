@@ -93,6 +93,7 @@ WIFI_DRIVER_MODULE_ARG := "suspend_mode=3 wow_mode=2 ath6kl_p2p=1 recovery_enabl
 
 ## RIL
 BOARD_USES_LEGACY_RIL := true
+BOARD_MOBILEDATA_INTERFACE_NAME := "pdp0"
 
 ## Vold
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
@@ -128,6 +129,9 @@ BOARD_HAS_DOWNLOAD_MODE := true
 BOARD_USES_MMCUTILS := true
 BOARD_HAS_NO_MISC_PARTITION := true
 BOARD_FLASH_BLOCK_SIZE := 131072
+
+# Test for charger
+BOARD_CUSTOM_GRAPHICS := ../../../device/samsung/msm7x27a-common/recovery/graphics.c
 
 ## Filesystem
 BOARD_DATA_DEVICE := /dev/block/mmcblk0p18
