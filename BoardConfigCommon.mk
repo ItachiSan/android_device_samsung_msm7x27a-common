@@ -72,7 +72,7 @@ COMMON_GLOBAL_CFLAGS += -DNO_TUNNELED_SOURCE
 
 ## EGL, graphics
 USE_OPENGL_RENDERER := true
-TARGET_QCOM_DISPLAY_VARIANT := legacy
+TARGET_QCOM_DISPLAY_VARIANT := caf
 TARGET_DOESNT_USE_FENCE_SYNC := true
 BOARD_ADRENO_DECIDE_TEXTURE_TARGET := true
 BOARD_EGL_CFG := device/samsung/msm7x27a-common/prebuilt/lib/egl/egl.cfg
@@ -111,6 +111,8 @@ WIFI_DRIVER_MODULE_ARG := "suspend_mode=3 wow_mode=2 ath6kl_p2p=1 recovery_enabl
 ## RIL
 BOARD_USES_LEGACY_RIL := true
 BOARD_RIL_CLASS := ../../../device/samsung/msm7x27a-common/ril/
+
+BOARD_MOBILEDATA_INTERFACE_NAME := "pdp0"
 
 ## Vold
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
