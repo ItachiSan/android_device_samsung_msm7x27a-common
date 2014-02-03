@@ -111,6 +111,9 @@ BOARD_LPM_BOOT_ARGUMENT_NAME := androidboot.boot_pause
 BOARD_LPM_BOOT_ARGUMENT_VALUE := batt
 BOARD_CHARGER_RES := device/samsung/msm7x27a-common/res/charger
 
+# At least it makes charger to not blink
+BOARD_CUSTOM_GRAPHICS := ../../../device/samsung/msm7x27a-common/recovery/graphics.c
+
 ## Bigger images
 #BOARD_CHARGER_RES := device/samsung/msm7x27a-common/res/charger_big
 
@@ -129,9 +132,6 @@ BOARD_HAS_DOWNLOAD_MODE := true
 BOARD_USES_MMCUTILS := true
 BOARD_HAS_NO_MISC_PARTITION := true
 BOARD_FLASH_BLOCK_SIZE := 131072
-
-# Test for charger
-BOARD_CUSTOM_GRAPHICS := ../../../device/samsung/msm7x27a-common/recovery/graphics.c
 
 ## Filesystem
 BOARD_DATA_DEVICE := /dev/block/mmcblk0p18
