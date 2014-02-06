@@ -128,6 +128,10 @@ PRODUCT_COPY_FILES += \
 ## Touchscreen configuration
 PRODUCT_COPY_FILES += \
     device/samsung/msm7x27a-common/prebuilt/usr/idc/sec_touchscreen.idc:system/usr/idc/sec_touchscreen.idc
+    
+## GPS better config, took from androidarmv6
+PRODUCT_COPY_FILES += \
+    device/samsung/msm7x27a-common/prebuilt/etc/gps.conf:system/etc/gps.conf
 
 ## Other
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=2
@@ -137,5 +141,5 @@ PRODUCT_AAPT_PREF_CONFIG := mdpi
 
 $(call inherit-product, build/target/product/full.mk)
 $(call inherit-product, vendor/samsung/msm7x27a-common/blobs.mk)
-$(call inherit-product, device/common/gps/gps_eu_supl.mk)
 $(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
+##$(call inherit-product, device/common/gps/gps_eu_supl.mk)
