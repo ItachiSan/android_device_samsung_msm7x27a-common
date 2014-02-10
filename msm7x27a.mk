@@ -192,8 +192,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.vold.umsdirtyratio=50 \
     persist.sys.vold.switchablepair=sdcard0,sdcard1
 
-PRODUCT_PROPERTY_OVERRIDES += \
-    persist.webview.provider=classic
+#PRODUCT_PROPERTY_OVERRIDES += \
+#    persist.webview.provider=classic
 
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.cwm.enable_key_repeat=true
