@@ -1,0 +1,135 @@
+From c621a60f25b6ed0a18d824e41d851bcc51372da6 Mon Sep 17 00:00:00 2001
+From: Giovanni Santini <giovannisantini93@yahoo.it>
+Date: Sun, 23 Feb 2014 16:52:33 +0100
+Subject: [PATCH] Correct usage of legacy mmparser 
+Actually, there's no usage of GB mmparser if not defined QCOM_LEGACY_OMX.
+In this commit we use correct defines for JB OMXs and GB mmparser.
+Based on fantastic @Ganster41 and @androidarmv6 work:
+androidarmv6/android_frameworks_av@fd39ba4534ede0094003f2282c13ad921cfcb525
+
+Change-Id: I9238dc867628b4851b78f393f7e224fd718335a5
+---
+ include/media/stagefright/DataSource.h           |  4 ++--
+ media/libstagefright/DataSource.cpp              | 10 +++++-----
+ media/libstagefright/ExtendedExtractor.cpp       |  4 ++--
+ media/libstagefright/include/ExtendedExtractor.h |  4 ++--
+ 4 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/include/media/stagefright/DataSource.h b/include/media/stagefright/DataSource.h
+index 57dfabd..388f3ec 100644
+--- a/include/media/stagefright/DataSource.h
++++ b/include/media/stagefright/DataSource.h
+@@ -77,7 +77,7 @@ public:
+             const sp<DataSource> &source, String8 *mimeType,
+             float *confidence, sp<AMessage> *meta);
+ 
+-#ifdef QCOM_LEGACY_OMX
++#if defined(QCOM_LEGACY_OMX) || defined(QCOM_LEGACY_MMPARSER)
+     //isExtendedExtractor if true, will store the location of the sniffer to register
+     static void RegisterSniffer(SnifferFunc func, bool isExtendedExtractor = false);
+ #else
+@@ -104,7 +104,7 @@ private:
+     static Mutex gSnifferMutex;
+     static List<SnifferFunc> gSniffers;
+ 
+-#ifdef QCOM_LEGACY_OMX
++#if defined(QCOM_LEGACY_OMX) || defined(QCOM_LEGACY_MMPARSER)
+     static List<SnifferFunc>::iterator extendedSnifferPosition;
+ #endif
+ 
+diff --git a/media/libstagefright/DataSource.cpp b/media/libstagefright/DataSource.cpp
+index 2e73a55..eb977a4 100644
+--- a/media/libstagefright/DataSource.cpp
++++ b/media/libstagefright/DataSource.cpp
+@@ -73,7 +73,7 @@ status_t DataSource::getSize(off64_t *size) {
+ Mutex DataSource::gSnifferMutex;
+ List<DataSource::SnifferFunc> DataSource::gSniffers;
+ 
+-#ifdef QCOM_LEGACY_OMX
++#if defined(QCOM_LEGACY_OMX) || defined(QCOM_LEGACY_MMPARSER)
+ List<DataSource::SnifferFunc>::iterator DataSource::extendedSnifferPosition;
+ #endif
+ 
+@@ -87,7 +87,7 @@ bool DataSource::sniff(
+     for (List<SnifferFunc>::iterator it = gSniffers.begin();
+          it != gSniffers.end(); ++it) {
+ 
+-#ifdef QCOM_LEGACY_OMX
++#if defined(QCOM_LEGACY_OMX) || defined(QCOM_LEGACY_MMPARSER)
+         // Does'n try to use ExtendedExtractor if already found suitable from defaults
+         if(it == extendedSnifferPosition && *confidence > 0.0)
+             return true;
+@@ -109,7 +109,7 @@ bool DataSource::sniff(
+ }
+ 
+ // static
+-#ifdef QCOM_LEGACY_OMX
++#if defined(QCOM_LEGACY_OMX) || defined(QCOM_LEGACY_MMPARSER)
+ void DataSource::RegisterSniffer(SnifferFunc func, bool isExtendedExtractor) {
+ #else
+ void DataSource::RegisterSniffer(SnifferFunc func) {
+@@ -125,7 +125,7 @@ void DataSource::RegisterSniffer(SnifferFunc func) {
+ 
+     gSniffers.push_back(func);
+ 
+-#ifdef QCOM_LEGACY_OMX
++#if defined(QCOM_LEGACY_OMX) || defined(QCOM_LEGACY_MMPARSER)
+     if(isExtendedExtractor) {
+         extendedSnifferPosition = gSniffers.end();
+         extendedSnifferPosition--;
+@@ -151,7 +151,7 @@ void DataSource::RegisterDefaultSniffers() {
+     RegisterSniffer(SniffWVM);
+ #endif
+ #ifdef QCOM_HARDWARE
+-#ifdef QCOM_LEGACY_OMX
++#if defined(QCOM_LEGACY_OMX) || defined(QCOM_LEGACY_MMPARSER)
+     ExtendedExtractor::RegisterSniffers();
+ #else
+     RegisterSniffer(SniffExtendedExtractor);
+diff --git a/media/libstagefright/ExtendedExtractor.cpp b/media/libstagefright/ExtendedExtractor.cpp
+index 0cb68d3..cd0f039 100644
+--- a/media/libstagefright/ExtendedExtractor.cpp
++++ b/media/libstagefright/ExtendedExtractor.cpp
+@@ -33,7 +33,7 @@
+ 
+ #include "include/ExtendedExtractor.h"
+ 
+-#ifdef QCOM_LEGACY_OMX
++#if defined(QCOM_LEGACY_OMX) || defined(QCOM_LEGACY_MMPARSER)
+ static const char* EXTENDED_PARSER_LIB = "libmmparser.so";
+ #else
+ static const char* EXTENDED_PARSER_LIB = "libExtendedExtractor.so";
+@@ -87,7 +87,7 @@ MediaExtractor* ExtendedExtractor::CreateExtractor(const sp<DataSource> &source,
+     return extractor;
+ }
+ 
+-#ifdef QCOM_LEGACY_OMX
++#if defined(QCOM_LEGACY_OMX) || defined(QCOM_LEGACY_MMPARSER)
+ void ExtendedExtractor::RegisterSniffers() {
+     void *extendedParserLib = ExtendedParserLib();
+     if (extendedParserLib == NULL) {
+diff --git a/media/libstagefright/include/ExtendedExtractor.h b/media/libstagefright/include/ExtendedExtractor.h
+index ebcacc7..d54a660 100644
+--- a/media/libstagefright/include/ExtendedExtractor.h
++++ b/media/libstagefright/include/ExtendedExtractor.h
+@@ -37,7 +37,7 @@ class MediaExtractor;
+ 
+ typedef MediaExtractor* (*MediaExtractorFactory)(const sp<DataSource> &source, const char* mime);
+ 
+-#ifdef QCOM_LEGACY_OMX
++#if defined(QCOM_LEGACY_OMX) || defined(QCOM_LEGACY_MMPARSER)
+ static const char* MEDIA_CREATE_EXTRACTOR = "createExtractor";
+ #else
+ static const char* MEDIA_CREATE_EXTRACTOR = "CreateExtractor";
+@@ -57,7 +57,7 @@ class ExtendedExtractor
+ public:
+     static MediaExtractor* CreateExtractor(const sp<DataSource> &source, const char *mime);
+ 
+-#ifdef QCOM_LEGACY_OMX
++#if defined(QCOM_LEGACY_OMX) || defined(QCOM_LEGACY_MMPARSER)
+     static void RegisterSniffers();
+ #endif
+ };
+-- 
+1.9.0
+
