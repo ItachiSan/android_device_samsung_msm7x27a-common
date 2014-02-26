@@ -58,6 +58,12 @@
     </Encoders>
     <Decoders>
         <!-- Audio Hardware  -->
+        <MediaCodec name="OMX.qcom.audio.decoder.mp3" type="audio/mpeg" >
+            <Quirk name="requires-global-flush" />
+        </MediaCodec>
+        <MediaCodec name="OMX.qcom.audio.decoder.aac" type="audio/mp4a-latm" >
+            <Quirk name="requires-global-flush" />
+        </MediaCodec>
         <MediaCodec name="OMX.qcom.audio.decoder.Qcelp13Hw" type="audio/qcelp" >
             <Quirk name="requires-global-flush" />
         </MediaCodec>
