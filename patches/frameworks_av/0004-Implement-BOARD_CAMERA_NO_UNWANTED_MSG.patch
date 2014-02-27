@@ -1,0 +1,35 @@
+From 8aa547add8792f60ac8f653724201e337a0efb95 Mon Sep 17 00:00:00 2001
+From: Giovanni Santini <giovannisantini93@yahoo.it>
+Date: Thu, 27 Feb 2014 09:21:40 +0100
+Subject: [PATCH] Implement BOARD_CAMERA_NO_UNWANTED_MSG
+
+On msm7x27 devices, most camera hals appear to spam this message:
+
+lockIfMessageWanted(16): dropped unwanted message
+
+This happens for all camera modes except barcode scanning. If there
+is a better fix for this issue, please let me know.
+
+Change-Id: If34ae52c0ce159a1f3aa97496dbc9e40edf12b49
+Credits: psyke83 @ androidarmv6
+---
+ services/camera/libcameraservice/CameraClient.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/services/camera/libcameraservice/CameraClient.cpp b/services/camera/libcameraservice/CameraClient.cpp
+index 1254962..62e2d24 100644
+--- a/services/camera/libcameraservice/CameraClient.cpp
++++ b/services/camera/libcameraservice/CameraClient.cpp
+@@ -715,7 +715,9 @@ bool CameraClient::lockIfMessageWanted(int32_t msgType) {
+         }
+         usleep(CHECK_MESSAGE_INTERVAL * 1000);
+     }
++    #ifndef CAMERA_NO_UNWANTED_MSG
+     ALOGW("lockIfMessageWanted(%d): dropped unwanted message", msgType);
++    #endif
+     return false;
+ }
+ 
+-- 
+1.9.0
+

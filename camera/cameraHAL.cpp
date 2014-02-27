@@ -496,7 +496,7 @@ int camera_device_open(const hw_module_t* module, const char* name, hw_device_t*
         camera_ops->start_preview              = camera_start_preview;
         camera_ops->stop_preview               = camera_stop_preview;
         camera_ops->preview_enabled            = camera_preview_enabled;
-        camera_ops->store_meta_data_in_buffers = camera_store_meta_data_in_buffers;
+        //camera_ops->store_meta_data_in_buffers = camera_store_meta_data_in_buffers;
         camera_ops->start_recording            = camera_start_recording;
         camera_ops->stop_recording             = camera_stop_recording;
         camera_ops->recording_enabled          = camera_recording_enabled;
